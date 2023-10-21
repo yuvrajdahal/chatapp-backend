@@ -20,6 +20,7 @@ export const register = asyncHandler(async (req, res, next) => {
     name,
   });
   await user.save();
+  console.log(user);
   let mailOptions = {
     email: user.email,
     subject: "Test verify email ",
@@ -94,7 +95,7 @@ export const login = asyncHandler(async (req, res, next) => {
   }
 
   const user = await User.findOne({ email }).select("+password");
-  if (user === null ) {
+  if (user === null) {
     return next(new ErrorResponse(`Invalid Credintials`, 401));
   }
   if (!user.isVerified) {
