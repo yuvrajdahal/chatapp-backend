@@ -44,7 +44,8 @@ userSchema.pre("save", async function (next) {
   }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  const svg = `https://avatars.dicebear.com/api/croodles/${this.name}.svg`;
+
+  const svg = `https://api.dicebear.com/7.x/croodles/svg?seed=${this.name}`;
   this.profilePicture = svg;
 });
 userSchema.methods.addJsonWebToken = function () {
