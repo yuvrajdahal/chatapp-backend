@@ -12,9 +12,10 @@ import sendEmail from "../utils/emailHandler";
 
 export const register = asyncHandler(async (req, res, next) => {
   const { email, name, password } = req.body;
-  const emailToken = crypto.randomBytes(10).toString("hex");
+  const hash = crypto.randomBytes(10).toString("hex");
+  const emailToken = crypto.createHash("sha256").update(hash).digest("hex");
   const user = await User.create({
-    emailToken: crypto.createHash("sha256").update(emailToken).digest("hex"),
+    emailToken: emailToken,
     email,
     password,
     name,
@@ -43,7 +44,7 @@ export const register = asyncHandler(async (req, res, next) => {
         Welcome to Bolumn Na! We're excited to have you on board. To complete your registration, please click the
         button below to verify your email address.
       </p>
-      <a href="http://${req.headers.host}/api/v1/auth/verify_email?token=${user.emailToken}"
+      <a href="http://${req.headers.host}/api/v1/auth/verify_email?token=${emailToken}"
         class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center">
         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
           <path
