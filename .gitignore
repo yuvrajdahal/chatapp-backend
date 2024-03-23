@@ -13,6 +13,7 @@ tmp
 # misc
 .DS_Store
 .env
+/src/config/.env
 src/config/.env
 .env.local
 .env.development.local

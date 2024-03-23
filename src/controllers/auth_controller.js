@@ -69,6 +69,7 @@ export const register = asyncHandler(async (req, res, next) => {
 </html>
  `,
   };
+  console.log(user);
   await sendEmail(mailOptions)
     .then(() => {
       console.log("Email sent");
@@ -173,14 +174,21 @@ export const verifyEmail = asyncHandler(async (req, res, next) => {
   const token = req.query.token;
   const user = await User.findOne({ emailToken: token });
   if (user) {
-    user.emailToken = null;
-    user.isVerified = true;
-    await user.save();
-    res.redirect(
-      process.env.NODE_ENV === "development"
-        ? process.env.DEV_BASE_URL
-        : process.env.PROD_BASE_URL
-    );
+    if (user.isVerified) {
+      res.redirect(
+        process.env.NODE_ENV === "development"
+          ? process.env.DEV_BASE_URL
+          : process.env.PROD_BASE_URL
+      );
+    } else {
+      user.isVerified = true;
+      await user.save();
+      res.redirect(
+        process.env.NODE_ENV === "development"
+          ? process.env.DEV_BASE_URL
+          : process.env.PROD_BASE_URL
+      );
+    }
   } else {
     return next(new ErrorResponse("Canot find user", 404));
   }
